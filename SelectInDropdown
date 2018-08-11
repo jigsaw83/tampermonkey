@@ -1,0 +1,48 @@
+// ==UserScript==
+// @name         SelectDropdown
+// @namespace    http://tampermonkey.net/
+// @version      0.2
+// @description  Tampermonkey-script to pre-choose configured selection from drow down on pre-configured sites
+// @author       Omar Retterstøl Langset - omar@jigsaw.no
+// @match        https://*.c2a.altibox.net/*
+// @grant        none
+// ==/UserScript==
+
+var sites = {
+    "Connect2Altibox": {
+                             "host": "c2a",
+                             "element_id": "input_1",
+                             "select_value": "lyse.no"
+                         },
+    "vg.no": {
+                             "host": "vg.no",
+                             "element_id": "donotexist",
+                             "select_value": ""
+                         }
+};
+
+
+function setSelectedIndex(s, v) {
+
+    for ( var i = 0; i < s.options.length; i++ ) {
+        if ( s.options[i].value == v ) {
+            s.options[i].selected = true;
+            return;
+
+        }
+    }
+}
+
+
+(function() {
+    'use strict';
+
+    for ( var site in sites ) {
+        if( window.location.host.match( sites[site].host ) && document.getElementById( sites[site].element_id ) != null) {
+            console.log("Tampermonkey - SelectDropDown : Matched " + site );
+            setSelectedIndex( document.getElementById( sites[site].element_id ), sites[site].select_value );
+        }
+    }
+
+})();
+
